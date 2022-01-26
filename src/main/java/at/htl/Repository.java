@@ -8,6 +8,7 @@ import at.htl.results.PlayerPenalties;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -100,8 +101,11 @@ public class Repository {
      * @param hasPenalty flag indicating if we want to look for players with or without penalties
      */
     public List<Player> getPlayersWithPenalties(boolean hasPenalty) {
-        var q = entityManager.createQuery("select p from Player p join p.penalties pe where (count(pe) >= 1) = (:bool)", Player.class);
-        q.setParameter("bool", hasPenalty);
+        TypedQuery<Player> q;
+        if (hasPenalty)
+            q = entityManager.createQuery("select p from Player p left join p.penalties pe group by p having count(pe) >= 1", Player.class);
+        else
+            q = entityManager.createQuery("select p from Player p left join p.penalties pe group by p having count(pe) = 0", Player.class);
         return q.getResultList();
     }
 
@@ -128,7 +132,7 @@ public class Repository {
      * Returns the penalty sum for all players, including those who never received a penalty (sum = 0)
      */
     public List<PlayerPenalties> getPenaltiesForAllPlayers() {
-        var q = entityManager.createQuery("select new at.htl.results.PlayerPenalties(p, sum(coalesce(pe.amount, 0) )) from Player p join p.penalties pe group by p", PlayerPenalties.class);
+        var q = entityManager.createQuery("select new at.htl.results.PlayerPenalties(p, sum(coalesce(pe.amount, 0.0))) from Player p left join p.penalties pe group by p", PlayerPenalties.class);
         return q.getResultList();
     }
 }
