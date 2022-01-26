@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes","u":"allclasses-index.html"},{"p":"at.htl.results","l":"GenderCount"},{"p":"at.htl.results","l":"MinMaxAmount"},{"p":"at.htl.model","l":"Penalty"},{"p":"at.htl.model","l":"Player"},{"p":"at.htl.results","l":"PlayerPenalties"},{"p":"at.htl","l":"Repository"},{"p":"<Unnamed>","l":"RepoTests"}];updateSearchResults();
